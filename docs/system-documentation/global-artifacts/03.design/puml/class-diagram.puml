@@ -1,0 +1,425 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+' === Game title ===
+class "Railroad Tycoon II" {
+    - title : String 
+}
+
+"Railroad Tycoon II" ..> "{NameOfUC}UI" 
+
+'=== Begging of game ===
+
+class ApplicationSession
+{
+  +{static} getInstance()
+  +getCurrentSession()
+}
+
+class UserSession
+{
+  +isLoggedInWithRole(USER_ROLE)
+}
+
+class "{NameOfUC}Controller" {
+    + {NameOfUC}Controller()
+    + methodX(...)
+}
+
+class "{NameOfUC}UI" {
+}
+
+"{NameOfUC}UI" ..> "{NameOfUC}Controller"
+"{NameOfUC}Controller" ..> ApplicationSession
+"{NameOfUC}Controller" ..> UserSession
+
+ApplicationSession --> "1" ApplicationSession : instance
+
+ApplicationSession ..> UserSession
+
+
+
+' === Users & Roles ===
+class User {
+    -username : String 
+    -password : String
+     +getUsername()
+    +getPassword()
+}
+
+class Player {
+}
+
+class Editor {
+}
+UserSession ..> User
+User "1" *-- "1..*" Player : has >
+User "1" *-- "1" Editor : has >
+
+
+'User ..> Editor
+'User "1" -- "1 .. *" Player : has >
+'User "1" -- "1" Editor : has >
+'"Railroad Tycoon II" "1" -- "1..*" User : contains >
+
+
+' === Core Entities for Editor ===
+class Map {
+    -size : int
+    -name : String
+   +getSizeOfMap()
+   +getNameOfMap()
+}
+
+class Location {
+    -longitude : int
+    -latitude : int
+    +getCoordinates(longitude,latitude)
+}
+
+Map "1" -- "1..*" Location : has >
+Location "1" -- "1" Station : includes >
+Location "1" -- "1" Industry : includes >
+Location "1" -- "1" City : includes >
+
+class Scenario {
+    -name : String
+    -initialBudget : double 
+    -description : String
+    -objective : String
+    +getName()
+    +getinitialBudget()
+    +getDescription()
+    +getObjective()
+}
+
+class Restriction {
+    -temporal : Temporal [*] /' it has multiple options '/
+    -technological : Technological [*] /' it has multiple options '/
+    -historical : Historical [*] /' it has multiple options '/
+    -generationRate : int
+    +getRestriction()
+}
+
+class City {
+    -name : String
+    -location : int
+    -population : int
+    -resourcesGenerated : int
+    -typesOfResourcesGenerated : TypesOfResourcesGenerated [*] /' it has multiple options '/
+}
+
+class HouseBlock {
+    -size : int
+    -location : int
+}
+
+class Industry {
+    -type : Type [*]  /' it is a list of the type of industries '/
+    location : int
+    inputResources : InputResources [*] /' it has multiple options '/
+    outputProducts : OutputProducts [*]   /' it has multiple options '/
+    industryCapacity : IndustryCapacity [*]  /' it has multiple options '/
+    productionRate :  ProductionRate [*]  /' it has multiple options '/
+}
+
+class PrimarySectorIndustry {
+        '-inputResources : String
+        -outputResource: String
+        -quantityOfPrimaryOutputResource()
+}
+
+class TransformingIndustry {
+    -inputResources : String
+    -outputProducts : String
+    -outputFinalProduct : String
+    +getQuantityOfInputResources()
+    -quantityOfOutputProducts()
+    -quantityOfOutputFinalProduct()
+}
+
+class MixedIndustry {
+    -cargoType : CargoType[*]
+    +
+}
+
+class Cargo {
+    weight
+    volume
+    destination
+    origin
+    type
+}
+
+class Resources {
+    quantity
+    type
+}
+
+class Passengers {
+}
+
+class Mail {
+}
+
+class NewProduct {
+}
+
+class FinalProduct {
+}
+
+class Event {
+    date
+    type
+    description
+}
+
+class Budget {
+}
+
+class Transaction {
+    revenue
+    timestamp
+    quantity
+}
+
+Editor "1" -- "1" Scenario : creates >
+Editor "1" -- "1" Map : creates >
+Scenario "1" -- "1" Restriction : has >
+Scenario "1..*" -- "1" Map : applied >
+City "1" -- "1..*" HouseBlock : has >
+HouseBlock "1" -- "1..*" Passengers : transact >
+HouseBlock "1" -- "1..*" Mail : transact >
+Industry "1" -- "1" PrimarySectorIndustry : can be >
+PrimarySectorIndustry "1" -- "1..*" Resources : generates >
+Resources "1" -- "1..*" Cargo : converted >
+Cargo "1..*" -- "1..*" Station : transported >
+Cargo "1" -- "1..*" TransformingIndustry : transported >
+Cargo "1" -- "1..*" MixedIndustry : transported >
+Cargo "1" -- "1..*" Mail : has >
+Cargo "1" -- "1..*" FinalProduct : has >
+Cargo "1" -- "1..*" Passengers : has >
+Cargo "1" -- "1..*" NewProduct : has >
+Station "1" -- "1" City : serves >
+Industry "1" -- "1..*" TransformingIndustry : can be >
+TransformingIndustry "1" -- "1" NewProduct : produces >
+TransformingIndustry "1" -- "1" FinalProduct : produces >
+Industry "1" -- "1..*" MixedIndustry : can be >
+MixedIndustry "1" -- "1" Port : has <
+Port "1" -- "1" Cargo : import >
+Port "1" -- "1" Cargo : export <
+
+' === Core Entities for Player ===
+class RailwayNetwork {
+    'Container for Routes, Lines, Trains, Stations'
+}
+
+class Route {
+    length
+    startStation
+    endStation
+}
+
+class RailwayLine {
+    length
+    type
+}
+
+class Train {
+    locomotive
+    carriages
+    route
+    name
+}
+
+class Locomotive {
+    type
+    power
+    acceleration
+    topSpeed
+    startYear
+    fuelCost
+    maintenanceCost
+    acquisitionPrice
+}
+
+class LocomotiveType {
+}
+
+class Carriage {
+    cargoType
+    capacity
+    weight
+    volume
+}
+
+class Station {
+    name
+    year
+    month
+    cargoLimit
+    economicRadius
+    upgradeOptions
+}
+
+class StationType {
+}
+
+class Depot {
+    cost
+    economicRadius
+}
+
+class Station_ {
+    cost
+    economicRadius
+    centerDefinition
+}
+
+class Terminal {
+    cost
+    economicRadius
+}
+
+class StationUpgrade {
+    'Details of Building Upgrades'
+    date
+    perk
+    buildingType
+    isMutuallyExclusive
+}
+
+class RailwayLineType {
+    'Details of Building Upgrades'
+}
+
+class ElectrifiedTrack {
+    single
+    double
+}
+
+class Track {
+    single
+    double
+}
+
+Player "1" -- "1" Scenario : chooses a >
+Player "1" -- "1" RailwayNetwork : builds >
+Player "1" -- "1..*" Route : defines >
+Route "1" -- "1" RailwayNetwork : uses >
+RailwayNetwork "1" -- "1..*" RailwayLine : has >
+RailwayNetwork "1" -- "1..*" Station : has >
+RailwayNetwork "1" -- "1..*" Train : has >
+Station "1" -- "1" StationType : has >
+StationType <|-- Depot
+StationType <|-- Station_
+StationType <|-- Terminal
+Station "1" -- "1..*" Industry : serves >
+Station "1" -- "1..*" StationUpgrade : has >
+Train "1" -- "1..*" RailwayLine : circulates >
+Train "1" -- "1" Locomotive : has >
+Train "1" -- "1..*" Carriage : has >
+RailwayLine "1" -- "1..*" RailwayLineType : has >
+RailwayLineType "1" -- "1" ElectrifiedTrack : can be >
+RailwayLineType "1" -- "1" Track : can be >
+Locomotive "1" -- "1" LocomotiveType : is composed by >
+LocomotiveType "1" -- "1" Diesel : can be >
+LocomotiveType "1" -- "1" Steam : can be >
+LocomotiveType "1" -- "1" Electric : can be >
+Track "1" -- "1" Diesel : circulates <
+Track "1" -- "1" Steam : circulates <
+ElectrifiedTrack "1" -- "1" Diesel : circulates <
+ElectrifiedTrack "1" -- "1" Steam : circulates <
+ElectrifiedTrack "1" -- "1" Electric : circulates <
+
+class Simulator {
+    pausePlay
+}
+
+Simulator "1" -- "1..*" Event : manages >
+Player "1" -- "1" Simulator : runs >
+Transaction "1" -- "1" Event : generates >
+Event "1" -- "1..*" Budget : updates >
+Station "1" -- "1..*" Transaction : generates >
+Scenario "1" -- "1" Simulator : applies to >
+
+' === Restrictions ===
+Restriction "1" -- "1..*" Train : affects >
+Restriction "1" -- "1..*" LocomotiveType : affects >
+Restriction "1" -- "1..*" Industry : affects >
+Restriction "1" -- "1..*" StationUpgrade : affects >
+Restriction "1" -- "1..*" RailwayLineType : affects >
+Restriction "1" -- "1..*" City : affects >
+
+class Demand {
+    type
+    quantity
+}
+
+class Supply {
+    type
+    quantity
+}
+
+City "1" -- "1" Demand : has >
+City "1" -- "1" Supply : has >
+Industry "1" -- "1" Demand : has >
+Industry "1" -- "1" Supply : has >
+
+Scenario "1" -- "1..*" Event : generates >
+
+Industry "1" -- "1..*" Event : generates >
+City "1" -- "1..*" Event : generates >
+
+Event "1" -- "1..*" Demand : influence >
+Event "1" -- "1..*" Supply : influence >
+
+Event "1" -- "1.." Cargo: generate >
+
+' === Unified Analysis ===
+package AnalysisModule {
+    abstract class Analysis {
+        type
+        description
+    }
+
+    class StatisticalAnalysis {
+        mean
+        median
+        mode
+        standardDeviation
+    }
+
+    class PassengerAnalysis {
+        passengerCount
+        peakHours
+    }
+
+    class CargoAnalysis {
+        cargoWeight
+        cargoVolume
+    }
+
+    class DistributionAnalysis {
+        distributionPattern
+        efficiency
+    }
+    class Metrics {
+    		mean
+    		median
+    		mode
+    		standardDeviation
+    }
+
+    Analysis <|-- StatisticalAnalysis
+    Analysis <|-- PassengerAnalysis
+    Analysis <|-- CargoAnalysis
+    Analysis <|-- DistributionAnalysis
+    Analysis "1" -- "1..*" Metrics : calculates >
+
+
+Station "1" -- "1..*" Analysis : collects >
+RailwayNetwork "1" -- "1" GraphRepresentation : visualizes >
+
+@enduml

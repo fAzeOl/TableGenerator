@@ -1,0 +1,28 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+autonumber
+
+participant ":CreateMapController" as CTRL
+participant "Repositories" as REPOS
+participant "repositories\n:Repositories" as REPOS_SINGLETON
+participant "mapRepository\n:MapRepository" as MAP_REPO
+
+activate CTRL
+    CTRL -> REPOS : getInstance()
+    activate REPOS
+        REPOS --> CTRL : repositories
+    deactivate REPOS
+
+    CTRL -> REPOS_SINGLETON : getMapRepository()
+    activate REPOS_SINGLETON
+        REPOS_SINGLETON --> CTRL : mapRepository
+    deactivate REPOS_SINGLETON
+
+    CTRL -> MAP_REPO : validateName(mapName)
+    activate MAP_REPO
+        MAP_REPO --> CTRL : (void)
+    deactivate MAP_REPO
+deactivate CTRL
+@enduml
