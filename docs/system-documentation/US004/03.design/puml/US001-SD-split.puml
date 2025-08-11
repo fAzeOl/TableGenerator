@@ -1,0 +1,37 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "Editor" as EDITOR
+participant ":CreateMapUI" as UI
+participant ":CreateMapController" as CTRL
+
+activate EDITOR
+
+    EDITOR -> UI : asks to create a new map
+    activate UI
+
+        UI --> CTRL** : create()
+
+        ref over UI
+            UI Interaction
+        end ref
+
+        activate CTRL
+        ref over CTRL
+            Repository Access and Validation
+        end ref
+
+        ref over CTRL
+            Map Creation and Storage
+        end ref
+
+        UI --> EDITOR : displays operation success
+    deactivate UI
+
+deactivate EDITOR
+deactivate CTRL
+@enduml

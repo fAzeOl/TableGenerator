@@ -1,10 +1,10 @@
-# US001 - Define Output Folder
+# US003 - Define Image Folder
 
 ## 1. Requirements Engineering
 
 ### 1.1. User Story Description
 
-As a user, I want to define the output folder so that I can choose where the generated Word files will be saved.
+As a user, I want to define the input image folder so that the app can include relevant images in the generated tables.
 
 ### 1.2. Customer Specifications and Clarifications 
 
@@ -18,8 +18,8 @@ As a user, I want to define the output folder so that I can choose where the gen
 
 ### 1.3. Acceptance Criteria
 
-* **AC1:** The selected folder path must exist on the file system.
-* **AC2:** The application must remember the folder selection for the current session or until changed by the user.
+* **AC1:** The selected folder must exist.
+* **AC2:** The application must validate that the folder is accessible (readable).
 
 ### 1.4. Found Out Dependencies
 
@@ -30,7 +30,7 @@ As a user, I want to define the output folder so that I can choose where the gen
 **Input Data:**
 
 * Selected data:
-    * Select an output folder
+    * Select a Image Folder
 
 **Output Data:**
 
@@ -38,10 +38,10 @@ As a user, I want to define the output folder so that I can choose where the gen
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![System Sequence Diagram](svg/US001-SSD.svg)
+![System Sequence Diagram](svg/US003-SSD.svg)
 
 **_Other alternatives might exist._**
 
 ### 1.7 Other Relevant Remarks
 
-* The user may re-define the output folder at any time via the main UI.
+* The user may re-define the Folder file path at any time via the main UI.

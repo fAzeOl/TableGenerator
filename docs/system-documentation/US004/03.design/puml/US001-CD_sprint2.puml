@@ -1,0 +1,61 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+skinparam classAttributeIconSize 0
+
+class Map {
+    - name : String
+    - width : int
+    - height : int
+    - grid : String[][]
+
+    + Map(name : String, width : int, height : int)
+    + getName() : String
+    + getWidth() : int
+    + getHeight() : int
+    + getGrid() : String[][]
+    + printMap() : void
+}
+
+
+class MapRepository {
+    + addMap(map : Map)
+}
+
+note right of MapRepository
+    Ensures map name uniqueness and stores maps
+end note
+
+class Repositories {
+    - Repositories()
+    + {static} getInstance()
+    + getMapRepository() : MapRepository
+}
+
+Repositories --> "1" MapRepository : mapRepository
+
+class CreateMapUI {
+    + create()
+    + requestMapData()
+    + displayConfirmation()
+    + displaySuccess()
+}
+
+class CreateMapController {
+    + createMap(name : String, width : int, height : int)
+}
+
+note right of CreateMapController
+    Coordinates map creation, validation and storage
+end note
+
+CreateMapUI .> CreateMapController
+CreateMapController .> Repositories
+CreateMapController ..> MapRepository : uses
+note right of Map
+    Created directly by the controller
+end note
+MapRepository --> Map : stores
+
+@enduml

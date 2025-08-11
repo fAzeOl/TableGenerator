@@ -30,7 +30,8 @@ As a user, I want to select the input Excel file so that the app can extract the
 
 **Input Data:**
 
-* User-selected file path
+* Selected data:
+    * Select an Excel File
 
 **Output Data:**
 

@@ -1,0 +1,18 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "User" as User
+participant ":System" as System
+
+activate User
+
+    User -> System : asks to open configuration Menu
+    activate System
+
+        System --> User : displays configuration Menu
+    deactivate System
+@enduml
