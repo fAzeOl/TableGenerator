@@ -1,0 +1,69 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+class CreateMapUI {
+    + create()
+    + requestMapData()
+    + displayConfirmation()
+    + displaySuccess()
+}
+
+class CreateMapController {
+    + createMap(dto: MapDTO): Map
+}
+
+class MapDTO {
+    - name: String
+    - width: int
+    - height: int
+    - scaleInKmPerCell: double
+    + getName(): String
+    + getWidth(): int
+    + getHeight(): int
+    + getScaleInKmPerCell(): double
+}
+
+class MapMapper {
+    + toDomain(dto: MapDTO): Map
+    + toDTO(map: Map): MapDTO
+}
+
+class MapService {
+    + createMap(dto: MapDTO): Map
+}
+
+class MapRepository {
+    + getMapByName(name: String): Map
+    + validateName(name: String): boolean
+    + addMap(map: Map): boolean
+    + getAllMaps(): List<Map>;
+}
+
+class Repositories {
+    - Repositories()
+    + getInstance(): Repositories
+    + getMapRepository(): MapRepository
+}
+
+class Map {
+    - name: String
+    - width: int
+    - height: int
+    - scaleInKmPerCell: double
+    + Map(name: String, width: int, height: int, scaleInKmPerCell: double)
+    + getName(): String
+    + getWidth(): int
+    + getHeight(): int
+    + getScaleInKmPerCell(): double
+}
+
+CreateMapUI --> CreateMapController
+CreateMapController --> MapService
+MapService --> MapMapper
+MapMapper --> Map
+MapService --> MapRepository
+Repositories --> MapRepository
+
+@enduml

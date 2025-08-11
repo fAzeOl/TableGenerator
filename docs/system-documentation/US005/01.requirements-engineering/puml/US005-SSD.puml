@@ -1,0 +1,20 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+actor "User" as User
+participant ":System" as System
+
+activate User
+
+    User -> System : Ask to "Generate Word Table"
+    activate System
+
+        System --> User : Create Word table and save to output folder
+    deactivate System
+
+deactivate User
+@enduml

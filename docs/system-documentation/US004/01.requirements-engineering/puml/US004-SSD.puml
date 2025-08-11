@@ -10,9 +10,24 @@ participant ":System" as System
 
 activate User
 
-    User -> System : asks to open configuration Menu
+    User -> System : Ask to open configuration menu
     activate System
 
-        System --> User : displays configuration Menu
+        System -> User : Display configuration UI and ask for inputs
     deactivate System
+
+    User -> System : Select update settings (layout, image, justification)
+    activate System
+
+        System -> User : Validate and display confirmation to save settings
+    deactivate System
+
+    User -> System : Confirms setting to save
+    activate System
+        
+        System -> User : Display success
+    
+    deactivate System
+
+deactivate User
 @enduml

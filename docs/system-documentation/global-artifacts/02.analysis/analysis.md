@@ -1,244 +1,90 @@
-# OO Analysis
+## OO Analysis
 
-The construction process of the domain model is based on the client specifications, especially the nouns (for _concepts_) and verbs (for _relations_) used.
+The construction process of the domain model is based on the client specifications, especially the nouns (for *concepts*) and verbs (for *relations*) used.
 
-## Rationale to identify domain conceptual classes
-Domain conceptual classes where identified by making a list of candidate conceptual classes inspired by the list of categories suggested in the book "Applying UML and Patterns: An Introduction to Object-Oriented Analysis and Design and Iterative Development".
+### Rationale to identify domain conceptual classes
+Domain conceptual classes were identified by making a list of candidate conceptual classes inspired by the list of categories suggested in *Applying UML and Patterns: An Introduction to Object-Oriented Analysis and Design and Iterative Development*.
 
+---
 
-### _Conceptual Class Category List_
+### **_Conceptual Class Category List_**
 
 **Business Transactions**
-
-- Transaction
-- Routes
-
----
+- Table Generation Request
 
 **Transaction Line Items**
+- TableContent (rows, columns, images, text)
 
-- Cargo
-
----
-
-**Product/Service related to a Transaction or Transaction Line Item**
-
-- Passengers
-- Mail
-- New Product
-- Final Product
-- Resources
-
----
+**Product/Service related to a Transaction**
+- WordTable (final product)
+- ExcelData (source data)
+- ImageRepository (source images)
 
 **Transaction Records**
-
-*
-
----  
+- Configuration settings stored in SQLite
 
 **Roles of People or Organizations**
-
-- Editor
-- Player
-
----
+- User
 
 **Places**
-
-- Scenario
-- City
-- Industry
-
----
+- OutputFolder (filesystem location)
+- ImageFolder (filesystem location)
 
 **Noteworthy Events**
-
-- Event
-
----
+- Configuration change
+- Table generation
 
 **Physical Objects**
-
-- RailwayLine
-- Train
-- Locomotive
-    - LocomotiveType
-        - Diesel
-        - Steam
-        - Electric
-- Carriage
-- Station
-    - StationType
-        - Depot
-        - Station_
-        - Terminal
-- StationUpgrade
-- RailwayLineType
-- Track
-- ElectrifiedTrack
-- Port
-
----
+- Image
+- Excel file
+- Word file
 
 **Descriptions of Things**
-
-*
-
----
-
-**Catalogs**
-
-*
-
----
+- Justification (criteria + text)
+- Table layout settings (image size, text position, etc.)
 
 **Containers**
-
-- Scenario
-- Railway Network
-
----
+- Application
+- Configuration
 
 **Elements of Containers**
-
-- Historical Restrictions
-- Time Restrictions
-- Technological Restrictions
-
----
-
-**Organizations**
-
-- Railroad Tycoon
-
----
+- Justification entries
 
 **Other External/Collaborating Systems**
-
-*
-
----
-
-**Records of finance, work, contracts, legal matters**
-
-*
+- Local file system
+- SQLite database
 
 ---
 
-**Financial Instruments**
+### **Rationale to identify associations**
+We used the “List of Common Associations” to decide which relations are worth modeling:
 
-- Budget
-- Demand
-- Supply
-
----
-
-**Documents mentioned/used to perform some work/**
-
-*
+- **A** is part of **B** → e.g., *Justification* is part of *Configuration*
+- **A** uses **B** → e.g., *WordTable* uses *ExcelData* and *ImageRepository*
+- **A** is stored in **B** → e.g., *Configuration* stored in SQLite
+- **A** generates **B** → e.g., *Application* generates *WordTable*
+- **A** is selected by **B** → e.g., *MainMenu* selects *ExcelData*
 
 ---
 
+### **Association Table**
 
+| Concept (A)             | Association      | Concept (B)             |
+|-------------------------|------------------|-------------------------|
+| Application             | runs as          | User                    |
+| User                    | manages          | Configuration           |
+| User                    | uses             | MainMenu                |
+| MainMenu                | selects          | ExcelData               |
+| MainMenu                | selects          | ImageRepository         |
+| MainMenu                | triggers         | WordTable               |
+| Configuration           | includes         | Justification           |
+| Configuration           | stored in        | ConfigurationRepository |
+| WordTable               | uses data from   | ExcelData               |
+| WordTable               | uses images from | ImageRepository         |
+| WordTable               | formatted by     | Configuration           |
+| Justification           | applies to       | TableContent            |
+| ConfigurationRepository | persists         | Configuration           |
 
-## Rationale to identify associations between conceptual classes
-
-An association is a relationship between instances of objects that indicates a relevant connection and that is worth of remembering, or it is derivable from the List of Common Associations:
-
-- **_A_** is physically or logically part of **_B_**
-- **_A_** is physically or logically contained in/on **_B_**
-- **_A_** is a description for **_B_**
-- **_A_** known/logged/recorded/reported/captured in **_B_**
-- **_A_** uses or manages or owns **_B_**
-- **_A_** is related with a transaction (item) of **_B_**
-- etc.
-
-
-| Concept (A)           |  Association   |           Concept (B) |
-|-----------------------|:--------------:|----------------------:|
-| User                  |      has       |                Player |
-| User                  |      has       |                Editor |
-| Railroad Tycoon II    |    contains    |                  User |
-| Editor                |    creates     |              Scenario |
-| Editor                |    creates     |                   Map |
-| Scenario              |      has       |           Restriction |
-| Scenario              |    applied     |                   Map |
-| Map                   |      has       |              Location |
-| Location              |    includes    |               Station |
-| Location              |    includes    |              Industry |
-| Location              |    includes    |                  City |
-| City                  |      has       |            HouseBlock |
-| HouseBlock            |    transact    |            Passengers |
-| HouseBlock            |    transact    |                  Mail |
-| Industry              |     can be     | PrimarySectorIndustry |
-| PrimarySectorIndustry |   generates    |             Resources |
-| Resources             |   converted    |                 Cargo |
-| Cargo                 |  transported   |               Station |
-| Cargo                 |  transported   |  TransformingIndustry |
-| Cargo                 |  transported   |         MixedIndustry |
-| Cargo                 |      has       |                  Mail |
-| Cargo                 |      has       |          FinalProduct |
-| Cargo                 |      has       |            Passengers |
-| Cargo                 |      has       |            NewProduct |
-| Station               |     serves     |                  City |
-| Industry              |     can be     |  TransformingIndustry |
-| TransformingIndustry  |    produces    |            NewProduct |
-| TransformingIndustry  |    produces    |          FinalProduct |
-| Industry              |     can be     |         MixedIndustry |
-| MixedIndustry         |      has       |                  Port |
-| Port                  |     import     |                 Cargo |
-| Port                  |     export     |                 Cargo |
-| Player                |   chooses a    |              Scenario |
-| Player                |     builds     |        RailwayNetwork |
-| Player                |    defines     |                 Route |
-| Route                 |      uses      |        RailwayNetwork |
-| RailwayNetwork        |      has       |           RailwayLine |
-| RailwayNetwork        |      has       |               Station |
-| RailwayNetwork        |      has       |                 Train |
-| Station               |      has       |           StationType |
-| StationType           |    inherits    |                 Depot |
-| StationType           |    inherits    |              Station_ |
-| StationType           |    inherits    |              Terminal |
-| Station               |     serves     |              Industry |
-| Station               |      has       |        StationUpgrade |
-| Train                 |   circulates   |           RailwayLine |
-| Train                 |      has       |            Locomotive |
-| Train                 |      has       |              Carriage |
-| RailwayLine           |      has       |       RailwayLineType |
-| RailwayLineType       |     can be     |      ElectrifiedTrack |
-| RailwayLineType       |     can be     |                 Track |
-| Locomotive            | is composed by |        LocomotiveType |
-| LocomotiveType        |     can be     |                Diesel |
-| LocomotiveType        |     can be     |                 Steam |
-| LocomotiveType        |     can be     |              Electric |
-| Track                 |   circulates   |                Diesel |
-| Track                 |   circulates   |                 Steam |
-| ElectrifiedTrack      |   circulates   |                Diesel |
-| ElectrifiedTrack      |   circulates   |                 Steam |
-| ElectrifiedTrack      |   circulates   |              Electric |
-| Player                |      runs      |             Simulator |
-| Simulator             |    manages     |                 Event |
-| Transaction           |   generates    |                 Event |
-| Event                 |    updates     |                Budget |
-| Station               |   generates    |           Transaction |
-| Scenario              |   applies to   |             Simulator |
-| Restriction           |    affects     |                 Train |
-| Restriction           |    affects     |        LocomotiveType |
-| Restriction           |    affects     |              Industry |
-| Restriction           |    affects     |        StationUpgrade |
-| Restriction           |    affects     |       RailwayLineType |
-| Restriction           |    affects     |                  City |
-| City                  |      has       |                Demand |
-| City                  |      has       |                Supply |
-| Industry              |      has       |                Demand |
-| Industry              |      has       |                Supply |
-| Scenario              |   generates    |                 Event |
-| Industry              |   generates    |                 Event |
-| City                  |   generates    |                 Event |
-| Event                 |   influence    |                Demand |
-| Event                 |   influence    |                Supply |
-| Event                 |    generate    |                 Cargo |
 
 
 ## Domain Model

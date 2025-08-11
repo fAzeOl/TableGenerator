@@ -11,10 +11,8 @@ rectangle "Use Cases" {
     usecase "UC01 - Define Output Folder" as UC01
     usecase "UC02 - Select Input Excel File" as UC02
     usecase "UC03 - Define Image Folder" as UC03
-    usecase "UC04 - Open Configuration Menu" as UC04
-    usecase "UC05 - Configure Table Layout Settings" as UC05
-    usecase "UC06 - Save to SQLite" as UC06
-    usecase "UC07 - Generate Word Table" as UC07
+    usecase "UC04 - Configure Table Generation Settings" as UC04
+    usecase "UC05 - Generate Word Table" as UC05
 }
 
 User -- UC01
@@ -22,7 +20,5 @@ User -- UC02
 User -- UC03
 User -- UC04
 User -- UC05
-User -- UC06
-User -- UC07
 
 @enduml
