@@ -1,39 +1,31 @@
-# US001 - Create a map
+# US001 - Define Output Folder
 
 ## 3. Design
 
 ### 3.1. Rationale
 
-| Interaction ID                                           | Question: Which class is responsible for...        | Answer              | Justification (with patterns)                                                               |
-|:---------------------------------------------------------|:---------------------------------------------------|:--------------------|:--------------------------------------------------------------------------------------------|
-| Step 1: asks to create a new map                         | ... interacting with the actor?                    | CreateMapUI         | Pure Fabrication: class dedicated to user interaction, not represented in the domain model. |
-|                                                          | ... coordinating the US?                           | CreateMapController | Controller: coordinates tasks and delegates work to domain or service classes.              |
-| Step 2: requests map name, width and height              | ... requesting data?                               | CreateMapUI         | IE: is responsible for user interactions.                                                   |
-| Step 3: types requested data (mapName, width and height) | ... saving the typed data temporarily?             | CreateMapUI         | IE: manages input data during user interaction.                                             |
-| Step 4: shows all data and requests confirmation         | ... showing all input and asking for confirmation? | CreateMapUI         | IE: is responsible for user interactions.                                                   |
-| Step 5: confirms data                                    | ... instantiating a MapDTO?                        | CreateMapUI         | Pure Fabrication: UI encapsulates input into DTO.                                           |
-|                                                          | ... delegating map creation to service?            | CreateMapController | Controller: orchestrates creation by calling service.                                       |
-|                                                          | ... mapping DTO to domain Map?                     | MapMapper           | Mapper: converts DTO to domain object.                                                      |
-|                                                          | ... representing the new Map domain entity?        | Map                 | Entity: holds all map data (name, dimensions, scale, grid).                                 |
-|                                                          | ... validating the Map name?                       | MapRepository       | Repository: ensures name uniqueness (SRP).                                                  |
-|                                                          | ... saving the created Map?                        | MapRepository       | Repository: persists the Map instance.                                                      |
-| Step 6: displays operation success                       | ... informing the actor of operation success?      | CreateMapUI         | Pure Fabrication: UI handles user notification.                                             |
+| Interaction ID                             | Question: Which class is responsible for...  | Answer                  | Justification (with patterns)                                                                 |
+|:-------------------------------------------|:---------------------------------------------|:------------------------|:----------------------------------------------------------------------------------------------|
+| Step 1: asks to select a new output folder | ... interacting with the actor?              | OutputFolderUI          | Pure Fabrication: dedicated UI class for handling user interaction, not part of domain model. |
+|                                            | ... coordinating the use case?               | OutputFolderController  | Controller: coordinates the steps and delegates to domain/service classes.                    |
+| Step 2: requests folder                    | ... prompting for folder selection?          | OutputFolderUI          | Information Expert (IE): UI layer is responsible for all user interaction.                    |
+| Step 3: selects folder                     | ... temporarily storing the chosen path?     | OutputFolderUI          | IE: UI maintains temporary data until it is passed to the controller.                         |
+|                                            | ... validating the selected folder?          | Validator           | IE and Pure Fabrication: Knows and enforces domain rules for output folder settings.                              |
+|                                            | ... saving the folder in persistent storage? | ConfigurationRepository | Repository: Responsible for persisting configuration data (SRP).                              |
+| Step 4: displays operation success         | ... informing the actor of the success?      | OutputFolderUI          | Pure Fabrication: UI handles display of operation result to the user.                         |
+                                           |
 
-### Systematization ##
+### Systematization
 
-According to the taken rationale, the conceptual classes promoted to software classes are: 
+According to the taken rationale, the conceptual classes promoted to software classes are:
 
-* Map
-* MapDTO
+* Validator
 
-Other software classes (i.e. Pure Fabrication / Service / Mapper) identified: 
+Other software classes (i.e. Pure Fabrication / Service / Mapper) identified:
 
-* CreateMapUI
-* CreateMapController
-* MapService
-* MapMapper
-* MapRepository
-* Repositories
+* OutputFolderUI
+* OutputFolderController
+* ConfigurationRepository
 
 
 ## 3.2. Sequence Diagram (SD)
